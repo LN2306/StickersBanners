@@ -14,6 +14,7 @@ class Sales:
         self._design = design
         self._reg = reg
         self._no_proof = no_proof
+        self._layout = []
     
     @property
     def broker(self):
@@ -49,9 +50,16 @@ class Sales:
     @no_proof.setter
     def no_proof(self, freq):
         self._no_proof = freq
-
+    
+    @property
+    def layout(self):
+        return self._layout
+    @layout.setter
+    def layout(self, layout):
+        self._layout = layout
 
 Adri = Sales("Adriana", 123456, 4 ,4, 4, 4, 4)
 print(Adri._broker)
 print(Adri._ID)
 print(Adri._name)
+print(Adri._layout)
