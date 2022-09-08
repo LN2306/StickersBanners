@@ -49,3 +49,9 @@ class Sales:
     @no_proof.setter
     def no_proof(self, freq):
         self._no_proof = freq
+
+
+Adri = Sales("Adriana", 123456, 4 ,4, 4, 4, 4)
+print(Adri._broker)
+print(Adri._ID)
+print(Adri._name)

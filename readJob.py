@@ -20,4 +20,5 @@ def read_file(directory):
 
 sales_list = read_file("sales.txt")
 
+
     
