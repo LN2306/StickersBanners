@@ -8,6 +8,7 @@ Created on Thu Sep  8 12:18:25 2022
 import PySimpleGUI as sg
 from readJob import read_file
 from queueGenerator import queueGenerator
+from printJob import print_Job
 
 def extraction(drop_down_dict, sales_list):
     for sales in sales_list:
@@ -39,9 +40,11 @@ def windowGenerator(Sales_list):
                 selected_title_color='Green',
                 selected_background_color='Yellow',
                 border_width=5),
+                [[sg.Button("Export and Create File"),
+                sg.Button("Exit")]]
         ]] 
     
-    window = sg.Window("Frequency Setup", tab_group, sg.Button("Export and Create File"), sg.Button("Exit"), finalize=True)
+    window = sg.Window("Frequency Setup", tab_group, finalize=True)
     for Sales in Sales_list:
         window["-{}B-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
         window["-{}NF-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
@@ -79,8 +82,7 @@ def main():
             Design = queueGenerator(final_sales_list, "DC")
             Regular = queueGenerator(final_sales_list, "R")
             NoProof = queueGenerator(final_sales_list, "NP")
-            #print(Broker, NoFile, Design, Regular, NoProof)
-            print(Broker)
+            print_Job("job.txt", Broker, NoFile, Design, Regular, NoProof)
         else:
             print (events, values[events])
             
