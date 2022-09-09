@@ -21,23 +21,27 @@ def extraction(drop_down_dict, sales_list):
 def layoutGenerator(Sales):
     drop_down_layout = [
         [sg.Text(Sales._name)],
-         [[sg.Text('Broker'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}B-".format(Sales._ID), enable_events=True),
+         [sg.Text('Broker'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}B-".format(Sales._ID), enable_events=True),
          sg.Text('No File'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NF-".format(Sales._ID), enable_events=True),
          sg.Text('Design Center'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}DC-".format(Sales._ID), enable_events=True)],
          [sg.Text('Regular'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}R-".format(Sales._ID), enable_events=True),
-         sg.Text('No Proof'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NP-".format(Sales._ID), enable_events=True)]]
+         sg.Text('No Proof'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NP-".format(Sales._ID), enable_events=True)]
         ]
     return drop_down_layout
 
 
-def windowGenerator(Sales_list, finalLayout):
-    window = sg.Window("Frequency Setup", finalLayout, finalize = True)
-    """
-    tab_group = [[sg.TabGroup([[sg.Tab(sales._name), sales._layout] for sales in Sales_list],
-                               tab_location='lefttop',
-                               title_color='White',
-                               border_width=5)]]
-    """
+def windowGenerator(Sales_list):   
+    
+    tab_group = [[sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in Sales_list]],
+                tab_location='lefttop',
+                title_color='White', 
+                tab_background_color='Purple',
+                selected_title_color='Green',
+                selected_background_color='Yellow',
+                border_width=5),
+        ]] 
+    
+    window = sg.Window("Frequency Setup", tab_group, sg.Button("Export and Create File"), sg.Button("Exit"), finalize=True)
     for Sales in Sales_list:
         window["-{}B-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
         window["-{}NF-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
@@ -47,15 +51,10 @@ def windowGenerator(Sales_list, finalLayout):
     return window
    
 def main():
-     final_layout = []
      Sales_list = read_file("sales.txt")
-     
      for sale in Sales_list:
          sale._layout = layoutGenerator(sale)
-         final_layout.append(sale._layout)
-     final_layout.append([sg.Button("Export and Create File"), sg.Button("Exit")])
-     final_window = windowGenerator(Sales_list, final_layout)
-     
+     final_window = windowGenerator(Sales_list)
          
      while True:
         events, values = final_window.read()

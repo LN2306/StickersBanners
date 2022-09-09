@@ -26,16 +26,17 @@ Adri = Sales("Adriana", "A", 4, 4, 4, 4, 4)
 Adri._layout = layoutGenerator(Adri)
 Linh = Sales("Linh", "L", 4, 4, 4, 4, 4)
 Linh._layout = layoutGenerator(Linh)
+sales_list = [Adri, Linh]
 
-tab_group = [[sg.TabGroup([[
-                sg.Tab('Adri', Adri._layout, background_color='Green'),
-                sg.Tab('Linh', Linh._layout, background_color='Green')]],
+tab_group = [[sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in sales_list]],
+                #sg.Tab('Adri', Adri._layout, background_color='Green'),
+                #sg.Tab('Linh', Linh._layout, background_color='Green')]],
             tab_location='lefttop',
             title_color='White', 
             tab_background_color='Purple',
             selected_title_color='Green',
             selected_background_color='Yellow',
-            border_width=5),
+            border_width=2),
             sg.Button('Exit')
     ]] 
 
