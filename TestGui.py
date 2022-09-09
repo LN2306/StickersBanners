@@ -6,53 +6,82 @@ Created on Thu Sep  8 12:18:25 2022
 """
 
 import PySimpleGUI as sg
-from salesClass import Sales
+from readJob import read_file
+from queueGenerator import queueGenerator
 
-
+def extraction(drop_down_dict, sales_list):
+    for sales in sales_list:
+        sales._broker = drop_down_dict["-{}B-".format(sales._ID)]
+        sales._no_file = drop_down_dict["-{}NF-".format(sales._ID)]
+        sales._design = drop_down_dict['-{}DC-'.format(sales._ID)]
+        sales._reg = drop_down_dict['-{}R-'.format(sales._ID)]
+        sales._no_proof = drop_down_dict['-{}NP-'.format(sales._ID)]
+    return sales_list
 
 def layoutGenerator(Sales):
     drop_down_layout = [
         [sg.Text(Sales._name)],
-         [[sg.Text('Broker'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], size=(5,5), key="-{}B-".format(Sales._ID), enable_events=True),
-         sg.Text('No File'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], size=(5,5), key="-{}NF-".format(Sales._ID), enable_events=True),
-         sg.Text('Design Center'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], size=(5,5), key="-{}DC-".format(Sales._ID), enable_events=True)],
-         [sg.Text('Regular'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], size=(5,5), key="-{}R-".format(Sales._ID), enable_events=True),
-         sg.Text('No Proof'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], size=(5,5), key="-{}NP-".format(Sales._ID), enable_events=True)]]
-         
+         [[sg.Text('Broker'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}B-".format(Sales._ID), enable_events=True),
+         sg.Text('No File'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NF-".format(Sales._ID), enable_events=True),
+         sg.Text('Design Center'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}DC-".format(Sales._ID), enable_events=True)],
+         [sg.Text('Regular'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}R-".format(Sales._ID), enable_events=True),
+         sg.Text('No Proof'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NP-".format(Sales._ID), enable_events=True)]]
         ]
     return drop_down_layout
 
 
 def windowGenerator(Sales_list, finalLayout):
-    window = sg.Window("Frequency Choose", finalLayout, finalize = True)
+    window = sg.Window("Frequency Setup", finalLayout, finalize = True)
     for Sales in Sales_list:
         window["-{}B-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
-        window["-{}NF-".format(Sales._ID)].bind('<KeyRelease', 'KEY DOWN')
-        window["-{}DC-".format(Sales._ID)].bind('<KeyRelease', 'KEY DOWN')
-        window["-{}R-".format(Sales._ID)].bind('<KeyRelease', 'KEY DOWN')
-        window["-{}NP-".format(Sales._ID)].bind('<KeyRelease', 'KEY DOWN')
+        window["-{}NF-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
+        window["-{}DC-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
+        window["-{}R-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
+        window["-{}NP-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
     return window
    
 def main():
      final_layout = []
-     Adri = Sales("Adriana", 264136, 4, 4, 4, 4, 4)
-     Linh = Sales("Linh", 257277, 4, 4, 4, 4, 4)
-     Danny = Sales("Danny", 124482, 4, 4, 4, 4, 4)
-     Ian = Sales("Ian", 217798, 4, 4, 4, 4, 4)
-     Sales_list = [Adri, Linh, Danny, Ian]
+     Sales_list = read_file("sales.txt")
      
      for sale in Sales_list:
          sale._layout = layoutGenerator(sale)
          final_layout.append(sale._layout)
-         
+     final_layout.append([sg.Button("Export and Create File"), sg.Button("Exit")])
      final_window = windowGenerator(Sales_list, final_layout)
          
      while True:
         events, values = final_window.read()
-        print(events, values)
+            
         if events == sg.WINDOW_CLOSED or events == "Exit":
             break
+        elif events == "Export and Create File":
+            for key in values:
+                if values[key] == "100%":
+                    values[key] = 4
+                elif values[key] == "75%":
+                    values[key] = 3
+                elif values[key] == "50%":
+                    values[key] = 2
+                elif values[key] == "25%":
+                    values[key] = 1
+                else:
+                    values[key] = 0
+            final_sales_list = extraction(values, Sales_list)
+            Broker = queueGenerator(final_sales_list, "B")
+            NoFile = queueGenerator(final_sales_list, "NF")
+            Design = queueGenerator(final_sales_list, "DC")
+            Regular = queueGenerator(final_sales_list, "R")
+            NoProof = queueGenerator(final_sales_list, "NP")
+            #print(Broker, NoFile, Design, Regular, NoProof)
+            print(Broker)
+        else:
+            print (events, values[events])
+            
      final_window.close()
-    
+     
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except TypeError:
+        pass

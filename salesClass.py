@@ -57,9 +57,3 @@ class Sales:
     @layout.setter
     def layout(self, layout):
         self._layout = layout
-
-Adri = Sales("Adriana", 123456, 4 ,4, 4, 4, 4)
-print(Adri._broker)
-print(Adri._ID)
-print(Adri._name)
-print(Adri._layout)

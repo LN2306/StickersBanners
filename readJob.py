@@ -13,7 +13,7 @@ def read_file(directory):
     sales_list = []
     for line in content:
         name, ID = line.split(" ")
-        temp = Sales(name, ID ,4,4,4,4,4)
+        temp = Sales(name, ID.strip("\n") ,4,4,4,4,4)
         exec(name + " = temp")
         exec("sales_list.append(" + name + ")")
     return sales_list
