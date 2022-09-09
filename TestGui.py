@@ -32,6 +32,12 @@ def layoutGenerator(Sales):
 
 def windowGenerator(Sales_list, finalLayout):
     window = sg.Window("Frequency Setup", finalLayout, finalize = True)
+    """
+    tab_group = [[sg.TabGroup([[sg.Tab(sales._name), sales._layout] for sales in Sales_list],
+                               tab_location='lefttop',
+                               title_color='White',
+                               border_width=5)]]
+    """
     for Sales in Sales_list:
         window["-{}B-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
         window["-{}NF-".format(Sales._ID)].bind('<KeyRelease>', 'KEY DOWN')
@@ -49,10 +55,11 @@ def main():
          final_layout.append(sale._layout)
      final_layout.append([sg.Button("Export and Create File"), sg.Button("Exit")])
      final_window = windowGenerator(Sales_list, final_layout)
+     
          
      while True:
         events, values = final_window.read()
-            
+
         if events == sg.WINDOW_CLOSED or events == "Exit":
             break
         elif events == "Export and Create File":
