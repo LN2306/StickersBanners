@@ -21,23 +21,21 @@ def extraction(drop_down_dict, sales_list):
 
 def layoutGenerator(Sales):
     drop_down_layout = [
-        [sg.Text(Sales._name)],
+        [sg.Text(Sales._name), sg.Button("Full Queue", key ="{}FQ".format(Sales._ID)), sg.Button("Remove", key = "{}NQ".format(Sales._ID))],
          [sg.Text('Broker'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}B-".format(Sales._ID), enable_events=True),
          sg.Text('No File'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NF-".format(Sales._ID), enable_events=True),
          sg.Text('Design Center'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}DC-".format(Sales._ID), enable_events=True)],
          [sg.Text('Regular'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}R-".format(Sales._ID), enable_events=True),
          sg.Text('No Proof'), sg.Combo(["100%", "75%", "50%", "25%", "0%"], default_value="100%", size=(5,5), key="-{}NP-".format(Sales._ID), enable_events=True)]
         ]
-    return drop_down_layout
-
+    return drop_down_layout   
 
 def windowGenerator(Sales_list):   
-    
     tab_group = [[sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in Sales_list]],
                 tab_location='lefttop',
-                title_color='White', 
-                tab_background_color='Purple',
-                selected_title_color='Green',
+                title_color='Black', 
+                tab_background_color='Green',
+                selected_title_color='Black',
                 selected_background_color='Yellow',
                 border_width=5),
                 [[sg.Button("Export and Create File"),
@@ -64,6 +62,33 @@ def main():
 
         if events == sg.WINDOW_CLOSED or events == "Exit":
             break
+        
+        if "FQ" in events:
+            ID = events.strip("FQ")
+            values["-{}B-".format(ID)] = "100%"
+            values["-{}NF-".format(ID)] = "100%"
+            values["-{}DC-".format(ID)] = "100%"
+            values["-{}R-".format(ID)] = "100%"
+            values["-{}NP-".format(ID)] = "100%"
+            final_window["-{}B-".format(ID)].update("100%")
+            final_window["-{}NF-".format(ID)].update("100%")
+            final_window["-{}DC-".format(ID)].update("100%")
+            final_window["-{}R-".format(ID)].update("100%")
+            final_window["-{}NP-".format(ID)].update("100%")
+            
+        elif "NQ" in events:
+            ID = events.strip("NQ")
+            values["-{}B-".format(ID)] = "0%"
+            values["-{}NF-".format(ID)] = "0%"
+            values["-{}DC-".format(ID)] = "0%"
+            values["-{}R-".format(ID)] = "0%"
+            values["-{}NP-".format(ID)] = "0%"
+            final_window["-{}B-".format(ID)].update("0%")
+            final_window["-{}NF-".format(ID)].update("0%")
+            final_window["-{}DC-".format(ID)].update("0%")
+            final_window["-{}R-".format(ID)].update("0%")
+            final_window["-{}NP-".format(ID)].update("0%")
+
         elif events == "Export and Create File":
             for key in values:
                 if values[key] == "100%":
