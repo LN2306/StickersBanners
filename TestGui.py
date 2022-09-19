@@ -6,6 +6,7 @@ Created on Thu Sep  8 12:18:25 2022
 """
 
 import PySimpleGUI as sg
+import os
 from readJob import read_file
 from queueGenerator import queueGenerator
 from printJob import print_Job
@@ -95,25 +96,29 @@ def main():
                 sg.PopupError("No Output Folder")
             else:
                 final_destination = values["-OUT-"]
-                print(final_destination)
-                for key in values:
-                    if values[key] == "100%":
-                        values[key] = 4
-                    elif values[key] == "75%":
-                        values[key] = 3
-                    elif values[key] == "50%":
-                        values[key] = 2
-                    elif values[key] == "25%":
-                        values[key] = 1
-                    else:
-                        values[key] = 0
-                final_sales_list = extraction(values, Sales_list)
-                Broker = queueGenerator(final_sales_list, "B")
-                NoFile = queueGenerator(final_sales_list, "NF")
-                Design = queueGenerator(final_sales_list, "DC")
-                Regular = queueGenerator(final_sales_list, "R")
-                NoProof = queueGenerator(final_sales_list, "NP")
-                print_Job(final_destination, Broker, NoFile, Design, Regular, NoProof)
+                if os.path.exists(final_destination):
+                    print(final_destination)
+                    for key in values:
+                        if values[key] == "100%":
+                            values[key] = 4
+                        elif values[key] == "75%":
+                            values[key] = 3
+                        elif values[key] == "50%":
+                            values[key] = 2
+                        elif values[key] == "25%":
+                            values[key] = 1
+                        else:
+                            values[key] = 0
+                    final_sales_list = extraction(values, Sales_list)
+                    Broker = queueGenerator(final_sales_list, "B")
+                    NoFile = queueGenerator(final_sales_list, "NF")
+                    Design = queueGenerator(final_sales_list, "DC")
+                    Regular = queueGenerator(final_sales_list, "R")
+                    NoProof = queueGenerator(final_sales_list, "NP")
+                    print_Job(final_destination, Broker, NoFile, Design, Regular, NoProof)
+                    sg.popup("Job.vb file has been created")
+                else:
+                    sg.PopupError("Invalid Output Folder")
         else:
             print (events, values[events])
             
