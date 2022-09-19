@@ -8,11 +8,13 @@ Created on Fri Sep  9 15:56:31 2022
 import os
 
 def print_Job(file_name, Broker, No_File, Design, Regular, No_Proof):
+    """
     if os.path.exists(file_name):
         os.remove(file_name)
     else:
         pass
-    f = open("job.txt", 'w')
+    """
+    f = open(file_name + "/" + "job.vb", 'w')
     f.write("Imports Microsoft.VisualBasic\n\n")
     f.write("Namespace TohCommonCode\n")
     f.write("  Public Class CommonCode\n\n")

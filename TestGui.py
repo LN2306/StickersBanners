@@ -31,7 +31,8 @@ def layoutGenerator(Sales):
     return drop_down_layout   
 
 def windowGenerator(Sales_list):   
-    tab_group = [[sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in Sales_list]],
+    tab_group = [[sg.Text("Output Folder"), sg.Input(key="-OUT-"), sg.FolderBrowse()],
+                [sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in Sales_list]],
                 tab_location='lefttop',
                 title_color='Black', 
                 tab_background_color='Green',
@@ -90,24 +91,29 @@ def main():
             final_window["-{}NP-".format(ID)].update("0%")
 
         elif events == "Export and Create File":
-            for key in values:
-                if values[key] == "100%":
-                    values[key] = 4
-                elif values[key] == "75%":
-                    values[key] = 3
-                elif values[key] == "50%":
-                    values[key] = 2
-                elif values[key] == "25%":
-                    values[key] = 1
-                else:
-                    values[key] = 0
-            final_sales_list = extraction(values, Sales_list)
-            Broker = queueGenerator(final_sales_list, "B")
-            NoFile = queueGenerator(final_sales_list, "NF")
-            Design = queueGenerator(final_sales_list, "DC")
-            Regular = queueGenerator(final_sales_list, "R")
-            NoProof = queueGenerator(final_sales_list, "NP")
-            print_Job("job.txt", Broker, NoFile, Design, Regular, NoProof)
+            if (values["-OUT-"] == ""):
+                sg.PopupError("No Output Folder")
+            else:
+                final_destination = values["-OUT-"]
+                print(final_destination)
+                for key in values:
+                    if values[key] == "100%":
+                        values[key] = 4
+                    elif values[key] == "75%":
+                        values[key] = 3
+                    elif values[key] == "50%":
+                        values[key] = 2
+                    elif values[key] == "25%":
+                        values[key] = 1
+                    else:
+                        values[key] = 0
+                final_sales_list = extraction(values, Sales_list)
+                Broker = queueGenerator(final_sales_list, "B")
+                NoFile = queueGenerator(final_sales_list, "NF")
+                Design = queueGenerator(final_sales_list, "DC")
+                Regular = queueGenerator(final_sales_list, "R")
+                NoProof = queueGenerator(final_sales_list, "NP")
+                print_Job(final_destination, Broker, NoFile, Design, Regular, NoProof)
         else:
             print (events, values[events])
             
