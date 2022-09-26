@@ -32,7 +32,7 @@ def layoutGenerator(Sales):
     return drop_down_layout   
 
 def windowGenerator(Sales_list):   
-    tab_group = [[sg.Text("Output Folder"), sg.Input(key="-OUT-"), sg.FolderBrowse("Browse File")],
+    tab_group = [[sg.Text("Output Folder"), sg.Input(key="-OUT-"), sg.FolderBrowse("Browse")],
                 [sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in Sales_list]],
                 tab_location='lefttop',
                 title_color='Black', 
@@ -59,7 +59,8 @@ def main():
      for sale in Sales_list:
          sale._layout = layoutGenerator(sale)
      final_window = windowGenerator(Sales_list)
-  
+     events, values = final_window.read()
+     
      while True:
         events, values = final_window.read()
 
@@ -110,6 +111,7 @@ def main():
             else:
                 final_destination = values["-OUT-"]
                 values.pop(0, None)
+                values.pop('Browse', None)
                 print_log(final_destination, values)
                 if os.path.exists(final_destination):
                     print(final_destination)
