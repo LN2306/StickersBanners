@@ -9,7 +9,7 @@ import PySimpleGUI as sg
 import os
 from readJob import read_file
 from queueGenerator import queueGenerator
-from printJob import print_Job
+from printJob import print_Job, print_log, read_log
 
 def extraction(drop_down_dict, sales_list):
     for sales in sales_list:
@@ -32,7 +32,7 @@ def layoutGenerator(Sales):
     return drop_down_layout   
 
 def windowGenerator(Sales_list):   
-    tab_group = [[sg.Text("Output Folder"), sg.Input(key="-OUT-"), sg.FolderBrowse()],
+    tab_group = [[sg.Text("Output Folder"), sg.Input(key="-OUT-"), sg.FolderBrowse("Browse File")],
                 [sg.TabGroup([[sg.Tab(sale._name, sale._layout) for sale in Sales_list]],
                 tab_location='lefttop',
                 title_color='Black', 
@@ -40,7 +40,8 @@ def windowGenerator(Sales_list):
                 selected_title_color='Black',
                 selected_background_color='Yellow',
                 border_width=5),
-                [[sg.Button("Export and Create File"),
+                [[sg.Button("Reimport"),
+                  sg.Button("Export and Create File"),
                 sg.Button("Exit")]]
         ]] 
     
@@ -58,14 +59,26 @@ def main():
      for sale in Sales_list:
          sale._layout = layoutGenerator(sale)
      final_window = windowGenerator(Sales_list)
-         
+  
      while True:
         events, values = final_window.read()
 
         if events == sg.WINDOW_CLOSED or events == "Exit":
             break
         
-        if "FQ" in events:
+        elif events == "Reimport":
+            if os.path.exists("log.txt"):
+                save_path, save_list = read_log()
+                for data in save_list:
+                    if data in values:
+                        values[data] = save_list[data]
+                        final_window[data].update(save_list[data])
+                values["-OUT-"] = save_path
+            else:
+                sg.PopupError("No Log Found")
+                pass
+            
+        elif "FQ" in events:
             ID = events.strip("FQ")
             values["-{}B-".format(ID)] = "100%"
             values["-{}NF-".format(ID)] = "100%"
@@ -96,6 +109,8 @@ def main():
                 sg.PopupError("No Output Folder")
             else:
                 final_destination = values["-OUT-"]
+                values.pop(0, None)
+                print_log(final_destination, values)
                 if os.path.exists(final_destination):
                     print(final_destination)
                     for key in values:
